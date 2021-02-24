@@ -17,28 +17,10 @@ import netCDF4 as nc
 import os
 import math
 
-#%% Data on ice thickness (m), bed elevation (m), and surface elevation (asl - m)
+"""TEST TO SEE IF I CAN COMMIT THIS"""
 
-=======
-Created on Mon Mar  2 10:08:21 2020
+#%%
 
-@author: eswaninger
-"""
-
-#%% Modules
-
-import matplotlib.pyplot as plt
-import numpy as np
-import Cython as c
-import setuptools as sts
-import cftime as cf
-from netCDF4 import Dataset
-import netCDF4 as nc
-import os
-import math
-import pandas as pd
-#%% Data
->>>>>>> 568cf5b6a784d58121085bc9f46dd6d007b836de
 os.chdir('/data/stor/basic_data/spatial_data/greenland/bedmap/')
 filename = 'BedMachineGreenland-2017-09-20.nc'
 
