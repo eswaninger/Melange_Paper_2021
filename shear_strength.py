@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+<<<<<<< HEAD
 Created on Wed Feb 24 10:55:26 2021
 
 @author: eswaninger
@@ -18,6 +19,26 @@ import math
 
 #%% Data on ice thickness (m), bed elevation (m), and surface elevation (asl - m)
 
+=======
+Created on Mon Mar  2 10:08:21 2020
+
+@author: eswaninger
+"""
+
+#%% Modules
+
+import matplotlib.pyplot as plt
+import numpy as np
+import Cython as c
+import setuptools as sts
+import cftime as cf
+from netCDF4 import Dataset
+import netCDF4 as nc
+import os
+import math
+import pandas as pd
+#%% Data
+>>>>>>> 568cf5b6a784d58121085bc9f46dd6d007b836de
 os.chdir('/data/stor/basic_data/spatial_data/greenland/bedmap/')
 filename = 'BedMachineGreenland-2017-09-20.nc'
 
@@ -28,6 +49,7 @@ bed_elevation = file['bed'] #meters
 mask = file['mask'] #0 = ocean, 1 = ice-free land, 2 = grounded ice, 3 = floating ice, 4 = non-Greenland land
 sur = file['surface']
 
+<<<<<<< HEAD
 #%% Array of ice thicknesses at terminus and corresponding surface elevations
 
 iceth = np.array(ice_thickness[8960:9020,2780:2840]) #ice thickness array at Rink
@@ -47,6 +69,44 @@ g = 9.81                                             #gravitational acceleration
 
 H= unice                                             #estimated iceberg heights
 E = W/H                                              #iceberg aspect ratio
+=======
+#%%
+plt.figure()
+plt.imshow(ice_thickness[8960:9020,2780:2840]) #[2813.83,8986.85]
+plt.figure()
+plt.imshow(sur[8960:9020,2780:2840])
+
+
+plt.plot([62.54],[115.2],'o', color='red', markersize = 6)  
+
+#%% Array of ice thicknesses at terminus and corresponding surface elevations
+iceth = np.array(ice_thickness[8960:9020,2780:2840])
+ice_block = iceth[27:33,33:36]
+unice = ice_block.ravel() #list of ice thicknesses
+surth = np.array(sur[8960:9020,2780:2840])
+sur_block = surth[27:33,33:36]
+unsur = sur_block.ravel() #list of surface elevations
+D= np.array(bed_elevation[8960:9020,2780:2840])
+D = D[27:33,33:36]
+unD = D.ravel() #list of waterdepths 
+
+floating= surth/iceth #if 0.10 ice is at neutral buoyancy, if below then its below buoyancy, if above than greater than neutral buoyancy
+plt.imshow(floating, vmin = 0, vmax = 0.2)
+plt.colorbar()
+plt.title('nearness to neutral buoyancy (0.1)')
+#%% Force Variables
+
+L= 1420 #m
+W=  400 #m
+
+H= unice
+E = W/H 
+h = unsur
+hdiff= (H-h)
+pw = 1020
+pi = 920
+g = 9.81
+>>>>>>> 568cf5b6a784d58121085bc9f46dd6d007b836de
 theta = np.deg2rad(1.18)
 
 vol_list =[] #whole iceberg
