@@ -27,8 +27,6 @@ from pylab import *
 import statistics as st
 import skimage as ski
 
-#%%
-
 ice0=[]
 ice1=[]
 ice2=[]
@@ -38,17 +36,7 @@ ice5=[]
 ice6=[]
 ice7=[]
 ice8=[]
-#ice0a=[]
-#ice1a=[]
-#ice2a=[]
-#ice3a=[]
-#ice4a=[]
-#ice5a=[]
-#ice6a=[]
-#ice7a=[]
-#ice8a=[]
-#ice9a=[]
-mel = []
+melange = []
 block=[]
 flist= []
 d_list = []
@@ -68,7 +56,6 @@ ys = np.arange(0,1559)
 xs = np.arange(0,845)
 for y in ys:
     for x in xs:
-#        print((y-yr)/(x-xr))
         xy = math.atan((x-xr)/(y-yr))
         xy = math.degrees(xy)
         slopes.append(np.abs(xy))
@@ -115,68 +102,11 @@ for root, dirs, files in os.walk('/data/stor/basic_data/tri_data/rink/proc_data/
                     IQR = np.percentile(unravel, 75, interpolation = 'midpoint') - np.percentile(unravel, 25, interpolation = 'midpoint')
                     iqr.append(IQR) 
     
-#%%
-plt.figure()
-#plt.plot(t_start, ice0, '.', color = 'goldenrod')
-#plt.plot(t_start, ice1, '.', color = 'limegreen')
-plt.plot(t_start, ice2, '.', color = 'black')
-plt.plot(t_start, ice3, '.', color = 'red')
-#plt.plot(t_start, ice4, '.', color = 'goldenrod')
-#plt.plot(t_start, ice5, '.', color = 'limegreen')
-plt.plot(t_start, ice6, '.', color = 'black')
-#plt.plot(t_start, ice7, '.', color = 'red')
-#plt.plot(t_start, ice8, '.', color = 'blue')
-plt.axvline(pd.to_datetime('2014-07-29-02:52:00'), color='k', linestyle='--', linewidth = 3, label = 'Calving Event')
-plt.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='k', linestyle='--', linewidth = 3)
                     
-                    
-#%%
-file = '20140729_060000u_20140729_060230u.adf.unw.rec'
-path= '/data/stor/basic_data/tri_data/rink/proc_data/d0728/INT/REC/'
-file_path = (path + file)
 
-with open(file_path,'rb') as f:
-    temp= f.read()
-    phase= np.fromfile(file_path, dtype='>f')
-    phase[phase==0] = np.nan
-    phase_rectangle = np.reshape(phase, (1559,845))
-    vlos = (-0.0175*phase_rectangle)/(4* 3.14159*(2.5/1440))
-    flow = vlos/(np.cos(np.radians(alpha)))
-    flow = flow[610:780,80:340]
-                   
-plt.figure()
-#plt.imshow(flow, norm= colors.SymLogNorm(linthresh = np.amin(0.1),linscale=0.19, vmin=9.0, vmax=20.0),cmap = 'viridis')
-plt.imshow(flow, vmin = 0, vmax = 20, cmap = 'viridis')
-plt.grid()
-plt.colorbar()               
 
-#plt.plot([49],[21],'v', color='red', markersize = 6, markerfacecolor= 'none')
-#plt.plot([73],[35],'v', color='orangered', markersize = 6, markerfacecolor= 'none')   
-#plt.plot([94],[38],'v', color='gold', markersize = 6, markerfacecolor= 'none')
-plt.plot([111],[48],'v', color='goldenrod', markersize = 6)
-plt.plot([130],[53],'v', color='limegreen', markersize = 6)
-#plt.plot([137],[55],'v', color='blue', markersize = 6, markerfacecolor= 'none')
-plt.plot([145],[61],'v', color='black', markersize = 6)
-plt.plot([156],[74],'v', color='red', markersize = 6)
-#plt.plot([164],[77],'v', color='brown', markersize = 6, markerfacecolor= 'none')
-#plt.plot([178],[94],'v', color='black', markersize = 6, markerfacecolor= 'none')
 
-#plt.plot([53],[12],'+', color='red', markersize = 6, markerfacecolor= 'none')
-#plt.plot([81],[20],'+', color='orangered', markersize = 6, markerfacecolor= 'none')   
-#plt.plot([101],[25],'+', color='gold', markersize = 6, markerfacecolor= 'none')
-plt.plot([117],[32],'s', color='goldenrod', markersize = 6)
-plt.plot([133],[36],'s', color='limegreen', markersize = 6)
-#plt.plot([148],[46],'s', color='blue', markersize = 6, markerfacecolor= 'none')
-plt.plot([151],[46],'s', color='black', markersize = 6)
-plt.plot([163],[59],'s', color='red', markersize = 6)
-#plt.plot([171],[68],'+', color='brown', markersize = 6, markerfacecolor= 'none')
-plt.plot([184],[88],'s', color='blue', markersize = 6)
-#plt.plot([176],[78],'s', color='slateblue', markersize = 6, markerfacecolor= 'none')
-#plt.plot([169],[90],'+', color='red', markersize = 6, markerfacecolor= 'none')
-
-plt.plot([145],[99],'s', color='blue', markersize = 6)
-
-#%% Create timeseries data - 3rd calving event 
+#%% Create timeseries velocity data
 
 ice0_vel_meas = np.array(ice0)
 ice1_vel_meas = np.array(ice1)
@@ -405,7 +335,7 @@ mli = np.flipud(mli)
 
 
 
-#KEY REFERNING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
+#KEY REFERING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
 # These locations are for the second TRI placement
 # Based on location of radar on Aug 1, 2014, working with field notes and 
     # /data/stor/basic_data/tri_data/rink/matlab_scripts/find_look_angle_and_azimuth/Find_look_angle.m
@@ -657,10 +587,6 @@ axes1.plot([-230.962],[-1981.38],'v', color='red', markersize = 5)
 axes1.plot([-230.649],[-1981.96],'s', color='blue', markersize = 5)
 
 
-
-#pos0 = axes.get_position()
-#pos1 = [pos0.x0 + 0.3, pos0.y0 + 0.3,  pos0.width / 2.0, pos0.height / 2.0] 
-#axes1.set_position(pos1)
 
 axes2.pcolormesh(e_eas/1000, n_nor/1000, mli_rot, vmin=0, vmax=16, cmap = 'gray')
 axes2.axis('equal')
