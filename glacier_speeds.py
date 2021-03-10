@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+<<<<<<< HEAD
 Created on Wed Mar 10 11:30:24 2021
 
 @author: eswaninger
@@ -9,6 +10,19 @@ This script evaluates and plotsglacier speeds
  
 """
 #%% Import Modules
+=======
+Created on Sun Dec  1 17:08:31 2019
+
+@author: eswaninger
+
+"""
+#%%
+
+''' This script gathers glacier speeds 
+'''
+
+#%% Modules
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 
 import os
 import numpy as np
@@ -24,8 +38,12 @@ from pylab import *
 import statistics as st
 import skimage as ski
 
+<<<<<<< HEAD
 
 ice0=[]                               #lists for velocities on glacier
+=======
+ice0=[]
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 ice1=[]
 ice2=[]
 ice3=[]
@@ -34,7 +52,11 @@ ice5=[]
 ice6=[]
 ice7=[]
 ice8=[]
+<<<<<<< HEAD
 mel=[]  
+=======
+melange = []
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 block=[]
 flist= []
 d_list = []
@@ -54,7 +76,10 @@ ys = np.arange(0,1559)
 xs = np.arange(0,845)
 for y in ys:
     for x in xs:
+<<<<<<< HEAD
 #        print((y-yr)/(x-xr))
+=======
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
         xy = math.atan((x-xr)/(y-yr))
         xy = math.degrees(xy)
         slopes.append(np.abs(xy))
@@ -101,6 +126,7 @@ for root, dirs, files in os.walk('/data/stor/basic_data/tri_data/rink/proc_data/
                     IQR = np.percentile(unravel, 75, interpolation = 'midpoint') - np.percentile(unravel, 25, interpolation = 'midpoint')
                     iqr.append(IQR) 
     
+<<<<<<< HEAD
 #%%
 plt.figure()
 #plt.plot(t_start, ice0, '.', color = 'goldenrod')
@@ -163,6 +189,13 @@ plt.plot([184],[88],'s', color='blue', markersize = 6)
 plt.plot([145],[99],'s', color='blue', markersize = 6)
 
 #%% Create timeseries data - 3rd calving event 
+=======
+                    
+
+
+
+#%% Create timeseries velocity data
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 
 ice0_vel_meas = np.array(ice0)
 ice1_vel_meas = np.array(ice1)
@@ -391,7 +424,11 @@ mli = np.flipud(mli)
 
 
 
+<<<<<<< HEAD
 #KEY REFERNING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
+=======
+#KEY REFERING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 # These locations are for the second TRI placement
 # Based on location of radar on Aug 1, 2014, working with field notes and 
     # /data/stor/basic_data/tri_data/rink/matlab_scripts/find_look_angle_and_azimuth/Find_look_angle.m
@@ -644,10 +681,13 @@ axes1.plot([-230.649],[-1981.96],'s', color='blue', markersize = 5)
 
 
 
+<<<<<<< HEAD
 #pos0 = axes.get_position()
 #pos1 = [pos0.x0 + 0.3, pos0.y0 + 0.3,  pos0.width / 2.0, pos0.height / 2.0] 
 #axes1.set_position(pos1)
 
+=======
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 axes2.pcolormesh(e_eas/1000, n_nor/1000, mli_rot, vmin=0, vmax=16, cmap = 'gray')
 axes2.axis('equal')
 axes2.grid(True)
@@ -693,4 +733,8 @@ axes2.plot([-230.52],[-1981.89],'s', color='blue', markersize = 5)
 axes1.yaxis.set_label_coords(-0.14,0.5)
 axes.yaxis.set_label_coords(-0.05,0.5)
 plt.setp(axes.get_xticklabels(),visible=True)
+<<<<<<< HEAD
 #fig.align_ylabels(axes[:, 1])
+=======
+#fig.align_ylabels(axes[:, 1])
+>>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
