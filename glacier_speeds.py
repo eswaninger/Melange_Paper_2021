@@ -6,44 +6,23 @@ Created on Wed Mar 10 11:30:24 2021
 
 @author: eswaninger
 
-This script evaluates and plotsglacier speeds 
+This script evaluates and plots glacier speeds 
  
 """
 #%% Import Modules
-=======
-Created on Sun Dec  1 17:08:31 2019
-
-@author: eswaninger
-
-"""
-#%%
-
-''' This script gathers glacier speeds 
-'''
-
-#%% Modules
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import matplotlib.colors as colors
 import datetime as dt
-from datetime import date
-from datetime import timedelta as td
 import math
 import pandas as pd
-from pylab import *
 import statistics as st
 import skimage as ski
 
-<<<<<<< HEAD
 
-ice0=[]                               #lists for velocities on glacier
-=======
+ice0=[]                               #Glacier velocity points lists
 ice0=[]
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 ice1=[]
 ice2=[]
 ice3=[]
@@ -52,42 +31,33 @@ ice5=[]
 ice6=[]
 ice7=[]
 ice8=[]
-<<<<<<< HEAD
-mel=[]  
-=======
-melange = []
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
-block=[]
-flist= []
-d_list = []
-t_start = []
-t_end = []
-t_diff = []
-slopes=[]
-medians = []
-q1 =[]
-q2 =[]
-q3 =[]
+mel=[]                               #Melange velocity point list
+
+flist= []                            #File list in directory
+t_start = []                         #Time start
+t_end = []                           #Time end
+medians = []                         #atmospheric noise - medians
+q1 =[]                               # interquartile range (25th percentile)
+q2 =[]                               # interquartile range (50th percentile)
+q3 =[]                               # interquartile range (75th percentile)
 iqr=[]
 
-yr = 778
-xr = 1
-ys = np.arange(0,1559)
-xs = np.arange(0,845)
-for y in ys:
+yr = 778                             #coordinate of apex pixel in interferogram scan (y-axis) 
+xr = 1                               #coordinate of apex pixels in interferogram scan (x-axis)
+ys = np.arange(0,1559)               #range of pixels in interferogram (y-axis)
+xs = np.arange(0,845)                #range of pixels in interferogram (x-axis)
+slopes=[]                            #slope list of any pixel in the interferogram and the TRI origin point.
+for y in ys:                         #calculating slope from pixels to TRI origin and converting them into degrees
     for x in xs:
-<<<<<<< HEAD
 #        print((y-yr)/(x-xr))
-=======
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
         xy = math.atan((x-xr)/(y-yr))
         xy = math.degrees(xy)
         slopes.append(np.abs(xy))
-slopes = np.reshape(slopes, (1559,845))
-gamma = 180 - np.array(slopes)
-beta = 202 #degrees from 0 north (),
-alpha = 360 - beta - gamma
-alpha = np.reshape(alpha, (1559,845))
+slopes = np.reshape(slopes, (1559,845)) #reshape into interferogram (x,y) shape
+xi = 180 - np.array(slopes)             #(Fig. 2) angle between north and TRI
+mu = 202                                #(Fig. 2) angle between north and flow direction of glacier
+omega = 360 - mu - xi                   #angle to get true flow direction at each pixel if we estimate that the glacier is all flowing 202 degrees from north
+omega = np.reshape(omega, (1559,845))
 
 for root, dirs, files in os.walk('/data/stor/basic_data/tri_data/rink/proc_data/'):
     for name in files:
@@ -98,21 +68,21 @@ for root, dirs, files in os.walk('/data/stor/basic_data/tri_data/rink/proc_data/
             if file_paths.startswith(('/data/stor/basic_data/tri_data/rink/proc_data/d0728')):
                 with open(file_paths,'rb') as f:
                     temp= f.read()
-                    phase= np.fromfile(file_paths, dtype='>f')
+                    phase= np.fromfile(file_paths, dtype='>f')                          #phases of interferograms
                     phase[phase==0] = np.nan
-                    phase_rectangle = np.reshape(phase, (1559,845))#[600:630,755:785]
-                    vlos = (-0.0175*phase_rectangle)/(4* 3.14159*(2.5/1440))
+                    phase_rectangle = np.reshape(phase, (1559,845))#[600:630,755:785]   #interferograms reshaped 
+                    vlos = (-0.0175*phase_rectangle)/(4* 3.14159*(2.5/1440))            #interferometric phases converted to line-of-sight (LOS) velocities 
 #                    flow = vlos/(np.cos(np.radians(alpha)))
-                    flow = vlos[610:780,80:340]
-                    ice0.append(flow[48,111]) #goldenrod
-                    ice1.append(flow[53,130]) #limegreen
-                    ice2.append(flow[61,145]) #black
-                    ice3.append(flow[74,156]) #red  
-                    ice4.append(flow[32,117]) #goldenrod 
-                    ice5.append(flow[36,133]) #limegreen
-                    ice6.append(flow[46,151]) #black
-                    ice7.append(flow[59,163]) #red  
-                    ice8.append(flow[88,184]) #blue
+                    flow = vlos[610:780,80:340]                                     #zooming in to terminus in interferograms
+                    ice0.append(flow[48,111])                                           #goldenrod
+                    ice1.append(flow[53,130])                                           #limegreen
+                    ice2.append(flow[61,145])                                           #black
+                    ice3.append(flow[74,156])                                           #red  
+                    ice4.append(flow[32,117])                                           #goldenrod 
+                    ice5.append(flow[36,133])                                           #limegreen
+                    ice6.append(flow[46,151])                                           #black
+                    ice7.append(flow[59,163])                                           #red  
+                    ice8.append(flow[88,184])                                           #blue
                     mel.append(flow[99,145])
                     t_start.append(dt.datetime.strptime(name[:15], '%Y%m%d_%H%M%S'))
                     t_end.append(dt.datetime.strptime(name[17:32], '%Y%m%d_%H%M%S'))  
@@ -126,78 +96,11 @@ for root, dirs, files in os.walk('/data/stor/basic_data/tri_data/rink/proc_data/
                     IQR = np.percentile(unravel, 75, interpolation = 'midpoint') - np.percentile(unravel, 25, interpolation = 'midpoint')
                     iqr.append(IQR) 
     
-<<<<<<< HEAD
-#%%
-plt.figure()
-#plt.plot(t_start, ice0, '.', color = 'goldenrod')
-#plt.plot(t_start, ice1, '.', color = 'limegreen')
-plt.plot(t_start, ice2, '.', color = 'black')
-plt.plot(t_start, ice3, '.', color = 'red')
-#plt.plot(t_start, ice4, '.', color = 'goldenrod')
-#plt.plot(t_start, ice5, '.', color = 'limegreen')
-plt.plot(t_start, ice6, '.', color = 'black')
-#plt.plot(t_start, ice7, '.', color = 'red')
-#plt.plot(t_start, ice8, '.', color = 'blue')
-plt.axvline(pd.to_datetime('2014-07-29-02:52:00'), color='k', linestyle='--', linewidth = 3, label = 'Calving Event')
-plt.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='k', linestyle='--', linewidth = 3)
-                    
-                    
-#%%
-file = '20140729_060000u_20140729_060230u.adf.unw.rec'
-path= '/data/stor/basic_data/tri_data/rink/proc_data/d0728/INT/REC/'
-file_path = (path + file)
-
-with open(file_path,'rb') as f:
-    temp= f.read()
-    phase= np.fromfile(file_path, dtype='>f')
-    phase[phase==0] = np.nan
-    phase_rectangle = np.reshape(phase, (1559,845))
-    vlos = (-0.0175*phase_rectangle)/(4* 3.14159*(2.5/1440))
-    flow = vlos/(np.cos(np.radians(alpha)))
-    flow = flow[610:780,80:340]
-                   
-plt.figure()
-#plt.imshow(flow, norm= colors.SymLogNorm(linthresh = np.amin(0.1),linscale=0.19, vmin=9.0, vmax=20.0),cmap = 'viridis')
-plt.imshow(flow, vmin = 0, vmax = 20, cmap = 'viridis')
-plt.grid()
-plt.colorbar()               
-
-#plt.plot([49],[21],'v', color='red', markersize = 6, markerfacecolor= 'none')
-#plt.plot([73],[35],'v', color='orangered', markersize = 6, markerfacecolor= 'none')   
-#plt.plot([94],[38],'v', color='gold', markersize = 6, markerfacecolor= 'none')
-plt.plot([111],[48],'v', color='goldenrod', markersize = 6)
-plt.plot([130],[53],'v', color='limegreen', markersize = 6)
-#plt.plot([137],[55],'v', color='blue', markersize = 6, markerfacecolor= 'none')
-plt.plot([145],[61],'v', color='black', markersize = 6)
-plt.plot([156],[74],'v', color='red', markersize = 6)
-#plt.plot([164],[77],'v', color='brown', markersize = 6, markerfacecolor= 'none')
-#plt.plot([178],[94],'v', color='black', markersize = 6, markerfacecolor= 'none')
-
-#plt.plot([53],[12],'+', color='red', markersize = 6, markerfacecolor= 'none')
-#plt.plot([81],[20],'+', color='orangered', markersize = 6, markerfacecolor= 'none')   
-#plt.plot([101],[25],'+', color='gold', markersize = 6, markerfacecolor= 'none')
-plt.plot([117],[32],'s', color='goldenrod', markersize = 6)
-plt.plot([133],[36],'s', color='limegreen', markersize = 6)
-#plt.plot([148],[46],'s', color='blue', markersize = 6, markerfacecolor= 'none')
-plt.plot([151],[46],'s', color='black', markersize = 6)
-plt.plot([163],[59],'s', color='red', markersize = 6)
-#plt.plot([171],[68],'+', color='brown', markersize = 6, markerfacecolor= 'none')
-plt.plot([184],[88],'s', color='blue', markersize = 6)
-#plt.plot([176],[78],'s', color='slateblue', markersize = 6, markerfacecolor= 'none')
-#plt.plot([169],[90],'+', color='red', markersize = 6, markerfacecolor= 'none')
-
-plt.plot([145],[99],'s', color='blue', markersize = 6)
-
-#%% Create timeseries data - 3rd calving event 
-=======
                     
 
+# Create timeseries velocity data
 
-
-#%% Create timeseries velocity data
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
-
-ice0_vel_meas = np.array(ice0)
+ice0_vel_meas = np.array(ice0)          #velocity arrays
 ice1_vel_meas = np.array(ice1)
 ice2_vel_meas = np.array(ice2)
 ice3_vel_meas = np.array(ice3)
@@ -310,107 +213,78 @@ t_gap, noise_run_gap = nan_into_gap(t_run, noise_run, gap_thresh)
 
 #
 # Plot the temporally-smoothed data Glacier ( in one graph)
-plt.figure()
-
-plt.fill_between(t_gap, vel_run_gap_g1-noise_run_gap, vel_run_gap_g1+noise_run_gap, 
-                   color='goldenrod', alpha='.2')
-#plt.scatter(t, gla1_vel_corr, s=1, color='goldenrod')
-plt.plot(t_gap, vel_run_gap_g1, color='goldenrod', markersize = 0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g2-noise_run_gap, vel_run_gap_g2+noise_run_gap, 
-                   color='limegreen', alpha='.2')
-#plt.scatter(t, gla2_vel_corr, s=1, color='blue')
-plt.plot(t_gap, vel_run_gap_g2, color='limegreen', markersize =0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g3-noise_run_gap, vel_run_gap_g3+noise_run_gap, 
-                   color='black', alpha='.2')
-#plt.scatter(t, gla3_vel_corr, s=1, color='black')
-plt.plot(t_gap, vel_run_gap_g3, color='black', markersize =0.5)
-
-plt.fill_between(t_gap[0:320], vel_run_gap_g4[0:320]-noise_run_gap[0:320], vel_run_gap_g4[0:320]+noise_run_gap[0:320], 
-                   color='red', alpha='.2')
-#plt.scatter(t, gla4_vel_corr[0:320], s=1, color='red')
-plt.plot(t_gap[0:320], vel_run_gap_g4[0:320], color='red', markersize =0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g5-noise_run_gap, vel_run_gap_g5+noise_run_gap, 
-                   color='goldenrod', alpha='.2')
-#plt.scatter(t, gla5_vel_corr, s=1, color='goldenrod')
-plt.plot(t_gap, vel_run_gap_g5, '--',color='goldenrod', markersize =0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g6-noise_run_gap, vel_run_gap_g6+noise_run_gap, 
-                   color='limegreen', alpha='.2')
-#plt.scatter(t, gla6_vel_corr, s=1, color='limegreen')
-plt.plot(t_gap, vel_run_gap_g6, '--',color='limegreen', markersize =0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g7-noise_run_gap, vel_run_gap_g7+noise_run_gap, 
-                   color='black', alpha='.2')
-#plt.scatter(t, gla7_vel_corr, s=1, color='black')
-plt.plot(t_gap, vel_run_gap_g7, '--',color='black', markersize =0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g8-noise_run_gap, vel_run_gap_g8+noise_run_gap, 
-                   color='red', alpha='.2')
-#plt.scatter(t, gla8_vel_corr, s=1, color='red')
-plt.plot(t_gap, vel_run_gap_g8, '--',color='red', markersize =0.5)
-
-plt.fill_between(t_gap, vel_run_gap_g9-noise_run_gap, vel_run_gap_g9+noise_run_gap, 
-                   color='blue', alpha='.2')
-#plt.scatter(t, gla9_vel_corr, s=1, color='blue')
-plt.plot(t_gap, vel_run_gap_g9, '--', color='blue', markersize =0.5, label= '▽')
-
-#plt.legend()
-plt.xlabel('Time (d)', fontsize = 18)
-plt.ylabel('Speeds, with uncertainties (m/d)', fontsize = 18)
-plt.title('Velocities (m/d)', fontsize = 24)
-#plt.axvspan(pd.to_datetime('2014-07-25-12:45:00'),pd.to_datetime('2014-07-25-15:15:00'), alpha= 0.4, color = 'darkgray', label = 'TRI motion error')
-#plt.axvspan(pd.to_datetime('2014-07-29-05:37:30'),pd.to_datetime('2014-07-30-22:25:00'), alpha= 0.2, color = 'gray', label = 'Mélange')
-#plt.axvline(pd.to_datetime('2014-07-26-10:00:00'), color='k', linestyle=':', linewidth = 3, label = 'Calving Event')
-plt.axvline(pd.to_datetime('2014-07-29-02:52:00'), color='k', linestyle='--', linewidth = 3, label = 'Calving Event')
-plt.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='k', linestyle='--', linewidth = 3)
-
-#Legend
-#front_line = mpatches.Patch(color='black', marker = '--', label='Frontline Velocity (m/d)')
-#back_line = mpatches.Patch(color='black', marker= '-', label='Backline Velocity (m/d)')
-#plt.legend(handles=[front_line, back_line])
-
+#plt.figure()
 #
-#plt.axvline(pd.to_datetime('2014-07-26-23:45:00'), color='red', linestyle='-.', label = 'A')
-#plt.axvline(pd.to_datetime('2014-07-27-09:02:30'), color='orangered', linestyle='-.', label = 'B')
-#plt.axvline(pd.to_datetime('2014-07-27-17:25:00'), color='orange', linestyle='-.', label = 'C')
-#plt.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='gold', linestyle='-.', label = 'D')
-#plt.axvline(pd.to_datetime('2014-07-29-02:15:00'), color='green', linestyle='-.', label = 'E')
-#plt.axvline(pd.to_datetime('2014-07-29-04:00:00'), color='blue', linestyle='-.', label = 'F')
+#plt.fill_between(t_gap, vel_run_gap_g1-noise_run_gap, vel_run_gap_g1+noise_run_gap, 
+#                   color='goldenrod', alpha='.2')
+##plt.scatter(t, gla1_vel_corr, s=1, color='goldenrod')
+#plt.plot(t_gap, vel_run_gap_g1, color='goldenrod', markersize = 0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g2-noise_run_gap, vel_run_gap_g2+noise_run_gap, 
+#                   color='limegreen', alpha='.2')
+##plt.scatter(t, gla2_vel_corr, s=1, color='blue')
+#plt.plot(t_gap, vel_run_gap_g2, color='limegreen', markersize =0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g3-noise_run_gap, vel_run_gap_g3+noise_run_gap, 
+#                   color='black', alpha='.2')
+##plt.scatter(t, gla3_vel_corr, s=1, color='black')
+#plt.plot(t_gap, vel_run_gap_g3, color='black', markersize =0.5)
+#
+#plt.fill_between(t_gap[0:320], vel_run_gap_g4[0:320]-noise_run_gap[0:320], vel_run_gap_g4[0:320]+noise_run_gap[0:320], 
+#                   color='red', alpha='.2')
+##plt.scatter(t, gla4_vel_corr[0:320], s=1, color='red')
+#plt.plot(t_gap[0:320], vel_run_gap_g4[0:320], color='red', markersize =0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g5-noise_run_gap, vel_run_gap_g5+noise_run_gap, 
+#                   color='goldenrod', alpha='.2')
+##plt.scatter(t, gla5_vel_corr, s=1, color='goldenrod')
+#plt.plot(t_gap, vel_run_gap_g5, '--',color='goldenrod', markersize =0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g6-noise_run_gap, vel_run_gap_g6+noise_run_gap, 
+#                   color='limegreen', alpha='.2')
+##plt.scatter(t, gla6_vel_corr, s=1, color='limegreen')
+#plt.plot(t_gap, vel_run_gap_g6, '--',color='limegreen', markersize =0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g7-noise_run_gap, vel_run_gap_g7+noise_run_gap, 
+#                   color='black', alpha='.2')
+##plt.scatter(t, gla7_vel_corr, s=1, color='black')
+#plt.plot(t_gap, vel_run_gap_g7, '--',color='black', markersize =0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g8-noise_run_gap, vel_run_gap_g8+noise_run_gap, 
+#                   color='red', alpha='.2')
+##plt.scatter(t, gla8_vel_corr, s=1, color='red')
+#plt.plot(t_gap, vel_run_gap_g8, '--',color='red', markersize =0.5)
+#
+#plt.fill_between(t_gap, vel_run_gap_g9-noise_run_gap, vel_run_gap_g9+noise_run_gap, 
+#                   color='blue', alpha='.2')
+##plt.scatter(t, gla9_vel_corr, s=1, color='blue')
+#plt.plot(t_gap, vel_run_gap_g9, '--', color='blue', markersize =0.5, label= '▽')
+#
+##plt.legend()
+#plt.xlabel('Time (d)', fontsize = 18)
+#plt.ylabel('Speeds, with uncertainties (m/d)', fontsize = 18)
+#plt.title('Velocities (m/d)', fontsize = 24)
+##plt.axvspan(pd.to_datetime('2014-07-25-12:45:00'),pd.to_datetime('2014-07-25-15:15:00'), alpha= 0.4, color = 'darkgray', label = 'TRI motion error')
+##plt.axvspan(pd.to_datetime('2014-07-29-05:37:30'),pd.to_datetime('2014-07-30-22:25:00'), alpha= 0.2, color = 'gray', label = 'Mélange')
+##plt.axvline(pd.to_datetime('2014-07-26-10:00:00'), color='k', linestyle=':', linewidth = 3, label = 'Calving Event')
+#plt.axvline(pd.to_datetime('2014-07-29-02:52:00'), color='k', linestyle='--', linewidth = 3, label = 'Calving Event')
+#plt.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='k', linestyle='--', linewidth = 3)
+#
+#
+#plt.legend(fontsize = 14)
+#plt.xticks(fontsize = 14)
+#plt.yticks(fontsize = 14)   
+#plt.grid()
 
-plt.legend(fontsize = 14)
-plt.xticks(fontsize = 14)
-plt.yticks(fontsize = 14)   
-plt.grid()
-#%%
-plt.figure()
-plt.plot(t_start, gla1_vel_corr, '.', color = 'goldenrod')
-plt.plot(t_start, gla2_vel_corr, '.', color = 'limegreen')
-plt.plot(t_start, gla3_vel_corr, '.', color = 'black')
-plt.plot(t_start, gla4_vel_corr, '.', color = 'red')
-plt.plot(t_start, gla5_vel_corr, '.', color = 'goldenrod')
-plt.plot(t_start, gla6_vel_corr, '.', color = 'limegreen')
-plt.plot(t_start, gla7_vel_corr, '.', color = 'black')
-plt.plot(t_start, gla8_vel_corr, '.', color = 'red')
-plt.plot(t_start, gla9_vel_corr, '.', color = 'blue')
-plt.axvline(pd.to_datetime('2014-07-29-02:52:00'), color='k', linestyle='--', linewidth = 3, label = 'Calving Event')
-plt.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='k', linestyle='--', linewidth = 3)
-
-#%%#%% TERMINUS PROFILES in georeferenced space
+#TERMINUS PROFILES in georeferenced space
 
 # READ IN THE MLI
 mli_size = (1248, 677)
 pix_spacing = 25 # m  from par file
 
 #Open MLI image
-#rmli_directory25 = '/data/stor/basic_data/tri_data/rink/proc_data/d0725/MLI/'
 mli_rect_dir = '/data/stor/basic_data/tri_data/rink/old//MLI_rect/'
 mli_image = '20140728_235000u.mli.rec'
-#mli_image = '20140726_182730u.mli.rec' # first adjusted scan image
-#mli_image = '20140728_182730u.mli.rec' # after first calving event
-#mli_image = '20140729_033000u.mli.rec' # after second calving event
 mli_file = (mli_rect_dir + mli_image)
 
 with open(mli_file, mode='rb') as file:
@@ -420,15 +294,10 @@ pixels = np.fromfile(mli_file, dtype='>f')
 pixels[pixels==0] = np.nan
 mli = np.reshape(pixels, mli_size) #1118, 1035
 mli = np.flipud(mli)
-#mli_rot = np.rot90(mli) #These are the rotated velocities
 
 
-
-<<<<<<< HEAD
-#KEY REFERNING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
-=======
 #KEY REFERING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
+
 # These locations are for the second TRI placement
 # Based on location of radar on Aug 1, 2014, working with field notes and 
     # /data/stor/basic_data/tri_data/rink/matlab_scripts/find_look_angle_and_azimuth/Find_look_angle.m
@@ -471,42 +340,42 @@ e_eas = eas[450:700]
 n_nor = nor[763:984]
 #
 mli_rot = mli_rot[763:984, 450:700]
-# PLOTTING
-plt.figure(num = 1, clear=True)
-plt.pcolormesh(e_eas/1000, n_nor/1000, mli_rot, vmin=0, vmax=20, cmap = 'gray')#20)
-
-plt.axis('equal')
-plt.grid(True)
-plt.xlabel('Easting (km)', fontsize = 14)
-plt.ylabel('Northing (km)', fontsize = 14)
-
-plt.plot([-232.909,-232.845,-232.359,-231.76,-231.71,-231.485,-231.499,-231.393,
-          -231.24,-231.176,-231.173,-230.979,-230.908,-230.659],
-         [-1979.67,-1979.78,-1979.83,-1980.38,-1980.7,-1981.44,-1981.98,-1982.3,-1982.46,
-          -1982.75,-1983.08,-1982.95,-1983.32,-1983.6],
-         color='limegreen', markersize = 1.5)   
-
-plt.plot([-232.909,-232.7,-232.41,-231.925,-231.533,-231.467,-231.415,
-            -231.217,-231.223,-231.068,-230.979,-230.886,-230.735,-230.543],
-         [-1979.67,-1979.95,-1979.86,-1980.1,-1980.47,-1980.72,-1981.4,
-          -1981.83, -1982.20,-1982.42,-1983.07,-1983.39,-1983.37,-1983.62],
-         color='yellow', markersize = 1.5) 
+## PLOTTING
+#plt.figure(num = 1, clear=True)
+#plt.pcolormesh(e_eas/1000, n_nor/1000, mli_rot, vmin=0, vmax=20, cmap = 'gray')#20)
 #
-plt.plot([-232.911,-232.709,-232.314,-231.807,-231.672,-231.287,-231.137,
-            -230.988,-230.977,-230.896,-230.931,-230.815,-230.636,-230.571],
-         [-1979.67,-1979.91,-1979.86,-1980.15,-1980.16,-1980.59,-1981.07,
-          -1981.55, -1982.30,-1982.64,-1982.89,-1983.36,-1983.4,-1983.65],
-         color='orange', markersize = 1.5) 
+#plt.axis('equal')
+#plt.grid(True)
+#plt.xlabel('Easting (km)', fontsize = 14)
+#plt.ylabel('Northing (km)', fontsize = 14)
+#
+#plt.plot([-232.909,-232.845,-232.359,-231.76,-231.71,-231.485,-231.499,-231.393,
+#          -231.24,-231.176,-231.173,-230.979,-230.908,-230.659],
+#         [-1979.67,-1979.78,-1979.83,-1980.38,-1980.7,-1981.44,-1981.98,-1982.3,-1982.46,
+#          -1982.75,-1983.08,-1982.95,-1983.32,-1983.6],
+#         color='limegreen', markersize = 1.5)   
+#
+#plt.plot([-232.909,-232.7,-232.41,-231.925,-231.533,-231.467,-231.415,
+#            -231.217,-231.223,-231.068,-230.979,-230.886,-230.735,-230.543],
+#         [-1979.67,-1979.95,-1979.86,-1980.1,-1980.47,-1980.72,-1981.4,
+#          -1981.83, -1982.20,-1982.42,-1983.07,-1983.39,-1983.37,-1983.62],
+#         color='yellow', markersize = 1.5) 
+##
+#plt.plot([-232.911,-232.709,-232.314,-231.807,-231.672,-231.287,-231.137,
+#            -230.988,-230.977,-230.896,-230.931,-230.815,-230.636,-230.571],
+#         [-1979.67,-1979.91,-1979.86,-1980.15,-1980.16,-1980.59,-1981.07,
+#          -1981.55, -1982.30,-1982.64,-1982.89,-1983.36,-1983.4,-1983.65],
+#         color='orange', markersize = 1.5) 
+#
+#plt.plot([-232.891,-232.786,-232.685,-232.295,-231.831,-231.477,-231.267,
+#            -231.163,-230.935,-230.887,-230.689,-230.584,-230.719,-230.638,
+#            -230.791,-230.713,-230.587,-230.545],
+#         [-1979.64,-1979.86,-1979.93,-1979.84,-1980.12,-1980.30,-1980.62,
+#          -1980.96, -1981.17,-1981.29,-1981.19,-1981.38,-1982.66,-1982.86,
+#          -1983.04,-1983.42,-1983.41,-1983.64],
+#         color='red', markersize = 1.5)  
 
-plt.plot([-232.891,-232.786,-232.685,-232.295,-231.831,-231.477,-231.267,
-            -231.163,-230.935,-230.887,-230.689,-230.584,-230.719,-230.638,
-            -230.791,-230.713,-230.587,-230.545],
-         [-1979.64,-1979.86,-1979.93,-1979.84,-1980.12,-1980.30,-1980.62,
-          -1980.96, -1981.17,-1981.29,-1981.19,-1981.38,-1982.66,-1982.86,
-          -1983.04,-1983.42,-1983.41,-1983.64],
-         color='red', markersize = 1.5)  
-
-#%%#%% Same as above but with georeferenced space
+# Same as above but with georeferenced space
 adf_size =(1559,845)
 pix_spacing = 20 # m  from par file
 # READ IN THE MLI
@@ -519,7 +388,7 @@ with open(adf_file, mode='rb') as file:
     phase[phase==0] = np.nan
     phase_rectangle = np.reshape(phase, (1559,845))
     adf = (-0.0175*phase_rectangle)/(4* 3.14159*(2.5/1440))
-    flows = adf/(np.cos(np.radians(alpha)))
+    flows = adf/(np.cos(np.radians(omega)))
     adf = np.flipud(flows)
 
 #KEY REFERNING INFORMATION ABOUT LOOK DIRECTION AND RADAR LOCATION
@@ -566,19 +435,8 @@ n_nor1 = nor1[930:1150]
 #
 adf_rot = adf_rot[930:1150, 600:770]
 
-# PLOTTING
-plt.figure(num = 1, clear=True)
-plt.pcolormesh(e_eas1/1000, n_nor1/1000, adf_rot, vmin = 0, vmax = 20, cmap = 'viridis')
-#plt.pcolormesh(eas1/1000, nor1/1000, adf_rot, vmin = 0, vmax = 15, cmap = 'viridis')
 
-plt.colorbar()
-plt.axis('equal')
-plt.grid(True)
-plt.xlabel('Easting (km)', fontsize = 16)
-plt.ylabel('Northing (km)', fontsize = 16)
-
-
-#%% SUBPLOTS of speeds and locations
+# SUBPLOTS of speeds and locations
 plt.figure()
 axes = plt.subplot2grid((2,2),(1,0), colspan = 2)
 #axes0 = plt.subplot2grid((3,3),(2,0), colspan = 2)
@@ -596,7 +454,7 @@ with open(file_path,'rb') as f:
     phase[phase==0] = np.nan
     phase_rectangle = np.reshape(phase, (1559,845))
     vlos = (-0.0175*phase_rectangle)/(4* 3.14159*(2.5/1440))
-    flow = vlos/(np.cos(np.radians(alpha)))
+    flow = vlos/(np.cos(np.radians(omega)))
     flow = flow[610:780,80:340]
 
 
@@ -680,14 +538,6 @@ axes1.plot([-230.962],[-1981.38],'v', color='red', markersize = 5)
 axes1.plot([-230.649],[-1981.96],'s', color='blue', markersize = 5)
 
 
-
-<<<<<<< HEAD
-#pos0 = axes.get_position()
-#pos1 = [pos0.x0 + 0.3, pos0.y0 + 0.3,  pos0.width / 2.0, pos0.height / 2.0] 
-#axes1.set_position(pos1)
-
-=======
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
 axes2.pcolormesh(e_eas/1000, n_nor/1000, mli_rot, vmin=0, vmax=16, cmap = 'gray')
 axes2.axis('equal')
 axes2.grid(True)
@@ -733,8 +583,6 @@ axes2.plot([-230.52],[-1981.89],'s', color='blue', markersize = 5)
 axes1.yaxis.set_label_coords(-0.14,0.5)
 axes.yaxis.set_label_coords(-0.05,0.5)
 plt.setp(axes.get_xticklabels(),visible=True)
-<<<<<<< HEAD
+
 #fig.align_ylabels(axes[:, 1])
-=======
-#fig.align_ylabels(axes[:, 1])
->>>>>>> 2f4f0f9f396a45255015b56b0c82b37d044ad2b1
+
