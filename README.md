@@ -8,7 +8,7 @@ To Do List
   5. Add moment to Force balance
   6. Check OpenPIV parameters
   7. Main Takeaways to convey: 
-   - summer melange provides resistance to iceberg capsize
-   - shear strength estimates for ice material failure at calving is lower than prior estimates
-   - calving can act as a set of dominose in which one calving event tears at he ice behind it and make it more likely to calve and trigger more calving.
+   - summer melange provides resistance to iceberg capsize.
+   - shear strength estimates for ice material failure at calving is lower than prior estimates.
+   - calving can act as a set of dominos in which one calving event tears at the ice behind it, which can make trigger more frequent calving.
    - icebergs that are torn away from the glacier as opposed to just broken off may be under appreciated because models consider slab capsize calving in 2D and disregard lateral processes.
