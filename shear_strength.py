@@ -99,7 +99,7 @@ ms= Vs*pw                                           #mass of submerged portion o
 Fg = -pi*g*Vi                                       #force of gravity for different masses of icebergs
 Fb = pw*g*Vs                                        #force of buoyancy for different masses of icebergs
 
-Fnet = -(Fg + Fb)                                   #net force on iceberg
+Fnet = (Fg + Fb)                                   #net force on iceberg
 
 Pmax = Fnet/A[1]                                    #shear strength (Pa)
 Pmax = Pmax/1000                                    # (kPa)
@@ -115,15 +115,16 @@ plt.xlabel('Terminus thickness (m)')
 
 plt.gcf().autofmt_xdate()
 
-# Torque moment due to buoyancy
+# Torque moment due to buoyancy - from burton et al. 2012
 
 cm  = -H*np.cos(theta)*((pi/pw)-(1/2))           #iceberg's center of mass
-cm1 = -(1/3)*(E)*H*np.sin(theta)                 #center of mass within triangle
-cm2 = -(H/2)*np.cos(theta)*((pi/pw)+(1/2)*E*(np.tan(theta))) #center of mass of the rectangle
+#cm1 = -(1/3)*(E)*H*np.sin(theta)                 #center of mass within triangle
+#cm2 = -(H/2)*np.cos(theta)*((pi/pw)+(1/2)*E*(np.tan(theta))) #center of mass of the rectangle
 cm_s = (C1*A1 + C2*A2)/(pi/pw)*A                  #Center of Buoyancy
 
 
 T = g*pi*L*A*(cm_s-cm)
+#T = H*Fnet*math.sin(theta)
 
 plt.figure()
 plt.plot(T, E,  '.')
