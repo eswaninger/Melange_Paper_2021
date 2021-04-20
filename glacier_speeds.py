@@ -19,6 +19,7 @@ import math
 import pandas as pd
 import statistics as st
 import skimage as ski
+import cv2
 
 
 ice0=[]                               #Glacier velocity points lists
@@ -36,11 +37,25 @@ mel=[]                               #Melange velocity point list
 flist= []                            #File list in directory
 t_start = []                         #Time start
 t_end = []                           #Time end
-medians = []                         #atmospheric noise - medians
-q1 =[]                               # interquartile range (25th percentile)
-q2 =[]                               # interquartile range (50th percentile)
-q3 =[]                               # interquartile range (75th percentile)
-iqr=[]
+medians_A = []                         #atmospheric noise - medians horizontal to tri near glacier terminus
+medians_B = [] 
+medians_C = [] 
+medians_far = []                       #atmospheric noise - medians high up on fjord away from glacier terminus
+q1_A =[]                               # interquartile range (25th percentile) A
+q2_A =[]                               # interquartile range (50th percentile)
+q3_A =[]                               # interquartile range (75th percentile)
+iqr_A=[]
+q1_B =[]                               # interquartile range (25th percentile) B
+q2_B =[]                               # interquartile range (50th percentile)
+q3_B =[]                               # interquartile range (75th percentile)
+iqr_B=[]
+q1_C =[]                               # interquartile range (25th percentile) C
+q2_C =[]                               # interquartile range (50th percentile)
+q3_C =[]                               # interquartile range (75th percentile)
+iqr_C=[]
+std_A = []
+std_B = []
+std_C = []
 
 yr = 778                             #coordinate of apex pixel in interferogram scan (y-axis) 
 xr = 1                               #coordinate of apex pixels in interferogram scan (x-axis)
@@ -86,16 +101,48 @@ for root, dirs, files in os.walk('/data/stor/basic_data/tri_data/rink/proc_data/
                     mel.append(flow[99,145])
                     t_start.append(dt.datetime.strptime(name[:15], '%Y%m%d_%H%M%S'))
                     t_end.append(dt.datetime.strptime(name[17:32], '%Y%m%d_%H%M%S'))  
-                    rockfav = np.array(vlos[860:880,380:400])
-                    unravel = rockfav.ravel()
-                    median = st.median(unravel)
-                    medians.append(median)
-                    q1.append(np.percentile(unravel, 25, interpolation = 'midpoint'))
-                    q2.append(np.percentile(unravel, 50, interpolation = 'midpoint'))
-                    q3.append(np.percentile(unravel, 75, interpolation = 'midpoint'))
-                    IQR = np.percentile(unravel, 75, interpolation = 'midpoint') - np.percentile(unravel, 25, interpolation = 'midpoint')
-                    iqr.append(IQR) 
+#                    rockfavA = np.array(vlos[560:580,360:380])                       #860:880,380:400 section of fjord rock wall used to gather atmospheric noise
+                    rockfavB = np.array(vlos[600:620,360:380])
+                    rockfavC = np.array(vlos[680:700,340:360])
+#                    rockfavD = np.array(vlos[860:880,380:400])
+#                    unravelA = rockfavA.ravel()
+                    unravelB = rockfavB.ravel()
+                    unravelC = rockfavC.ravel()
+#                    unravelD = rockfavD.ravel()
+#                    medianA = st.median(unravelA)
+                    medianB = st.median(unravelB)
+                    medianC = st.median(unravelC)
+#                    medianD = st.median(unravelD)
+#                    medians_A.append(medianA)
+                    medians_B.append(medianB)
+                    medians_C.append(medianC)
+#                    medians_far.append(medianD)
+#                    stdA = np.std(unravelA)
+                    stdB = np.std(unravelB)
+                    stdC = np.std(unravelC)
+#                    std_A.append(stdA)
+                    std_B.append(stdB)
+                    std_C.append(stdC)
+#                    q1_A.append(np.percentile(unravelA, 25, interpolation = 'midpoint'))
+#                    q2_A.append(np.percentile(unravelA, 50, interpolation = 'midpoint'))
+#                    q3_A.append(np.percentile(unravelA, 75, interpolation = 'midpoint'))
+#                    IQR = np.percentile(unravelA, 75, interpolation = 'midpoint') - np.percentile(unravelA, 25, interpolation = 'midpoint')
+#                    iqr_A.append(IQR) 
+                    q1_B.append(np.percentile(unravelB, 25, interpolation = 'midpoint'))
+                    q2_B.append(np.percentile(unravelB, 50, interpolation = 'midpoint'))
+                    q3_B.append(np.percentile(unravelB, 75, interpolation = 'midpoint'))
+                    IQR = np.percentile(unravelB, 75, interpolation = 'midpoint') - np.percentile(unravelB, 25, interpolation = 'midpoint')
+                    iqr_B.append(IQR) 
+                    q1_C.append(np.percentile(unravelC, 25, interpolation = 'midpoint'))
+                    q2_C.append(np.percentile(unravelC, 50, interpolation = 'midpoint'))
+                    q3_C.append(np.percentile(unravelC, 75, interpolation = 'midpoint'))
+                    IQR = np.percentile(unravelC, 75, interpolation = 'midpoint') - np.percentile(unravelC, 25, interpolation = 'midpoint')
+                    iqr_C.append(IQR) 
     
+# Create rectangles in atmosphere areas on image
+#plt.imshow(vlos)
+#cv2.rectangle(vlos, (680,700),(340,360),  (255,0,0))
+
                     
 
 # Create timeseries velocity data
@@ -111,8 +158,14 @@ ice7_vel_meas = np.array(ice7)
 ice8_vel_meas = np.array(ice8)
 
 
-noise_rand = np.array(iqr)
-noise_syst = np.array(medians)
+noise_rand= np.array(iqr_B)
+noise_syst = np.array(medians_B)
+#noise_randA= np.array(iqr_A)
+#noise_systA = np.array(medians_A)
+#noise_randB= np.array(iqr_B)
+#noise_systB = np.array(medians_B)
+#noise_randC= np.array(iqr_B)
+#noise_systC = np.array(medians_C)
 
 #Dt = 2.5 # minutes
 #dt_days = Dt/1440 # days
@@ -437,11 +490,11 @@ adf_rot = adf_rot[930:1150, 600:770]
 
 
 # SUBPLOTS of speeds and locations
-plt.figure()
-axes = plt.subplot2grid((2,2),(1,0), colspan = 2)
+fig= plt.figure()
+axes = plt.subplot2grid((2,3),(1,0), colspan = 2)
 #axes0 = plt.subplot2grid((3,3),(2,0), colspan = 2)
-axes1 = plt.subplot2grid((2,2), (0,0), colspan=1)
-axes2 = plt.subplot2grid((2,2), (0,1), colspan=1)
+axes1 = plt.subplot2grid((2,3), (0,0), colspan=1)
+axes2 = plt.subplot2grid((2,3), (0,1), colspan=1)
 
 
 file = '20140729_041500u_20140729_041730u.adf.unw.rec'
@@ -458,10 +511,10 @@ with open(file_path,'rb') as f:
     flow = flow[610:780,80:340]
 
 
-axes.fill_between(t_gap, vel_run_gap_g1-noise_run_gap, vel_run_gap_g1+noise_run_gap, 
-                   color='goldenrod', alpha='.2')
-#plt.scatter(t, gla1_vel_corr, s=1, color='darkcyan')
-axes.plot(t_gap, vel_run_gap_g1, color='goldenrod', markersize = 0.5)
+#axes.fill_between(t_gap, vel_run_gap_g1-noise_run_gap, vel_run_gap_g1+noise_run_gap, 
+#                   color='goldenrod', alpha='.2')
+##plt.scatter(t, gla1_vel_corr, s=1, color='darkcyan')
+#axes.plot(t_gap, vel_run_gap_g1, color='goldenrod', markersize = 0.5)
 
 axes.fill_between(t_gap, vel_run_gap_g2-noise_run_gap, vel_run_gap_g2+noise_run_gap, 
                    color='limegreen', alpha='.2')
@@ -478,10 +531,10 @@ axes.fill_between(t_gap[0:319], vel_run_gap_g4[0:319]-noise_run_gap[0:319], vel_
 #plt.scatter(t, gla4_vel_corr, s=1, color='magenta')
 axes.plot(t_gap[0:319], vel_run_gap_g4[0:319], color='red', markersize =0.5)
 
-axes.fill_between(t_gap, vel_run_gap_g5-noise_run_gap, vel_run_gap_g5+noise_run_gap, 
-                   color='goldenrod', alpha='.2')
-#plt.scatter(t, gla5_vel_corr, s=1, color='magenta')
-axes.plot(t_gap, vel_run_gap_g5,'--', color='goldenrod', markersize =0.5)
+#axes.fill_between(t_gap, vel_run_gap_g5-noise_run_gap, vel_run_gap_g5+noise_run_gap, 
+#                   color='goldenrod', alpha='.2')
+##plt.scatter(t, gla5_vel_corr, s=1, color='magenta')
+#axes.plot(t_gap, vel_run_gap_g5,'--', color='goldenrod', markersize =0.5)
 
 axes.fill_between(t_gap, vel_run_gap_g6-noise_run_gap, vel_run_gap_g6+noise_run_gap, 
                    color='limegreen', alpha='.2')
@@ -498,51 +551,58 @@ axes.fill_between(t_gap, vel_run_gap_g8-noise_run_gap, vel_run_gap_g8+noise_run_
 #plt.scatter(t, gla8_vel_corr, s=1, color='magenta')
 axes.plot(t_gap, vel_run_gap_g8,'--', color='red', markersize =0.5)
 
-axes.fill_between(t_gap, vel_run_gap_g9-noise_run_gap, vel_run_gap_g9+noise_run_gap, 
-                   color='blue', alpha='.2')
-#plt.scatter(t, gla9_vel_corr, s=1, color='magenta')
-axes.plot(t_gap, vel_run_gap_g9, '--', color='blue', markersize =0.5)
+#axes.fill_between(t_gap, vel_run_gap_g9-noise_run_gap, vel_run_gap_g9+noise_run_gap, 
+#                   color='blue', alpha='.2')
+##plt.scatter(t, gla9_vel_corr, s=1, color='magenta')
+#axes.plot(t_gap, vel_run_gap_g9, '--', color='blue', markersize =0.5)
 
 
-axes.set_xlabel('Date', fontsize = 14)
-axes.set_ylabel('Speeds, w/ Uncertainties (m/d)', fontsize = 14)
-axes.tick_params(axis='both', which='major', labelsize=12)
+axes.set_xlabel('Date')
+#axes.set_ylabel('Speeds, w/ Uncertainties (m/d)', fontsize = 13)
+axes.tick_params(axis='both', which='major')
 axes.grid()
 #axes.set_title('Glacier Velocities (m/d)', fontsize = 15)
 axes.axvline(pd.to_datetime('2014-07-28-18:02:00'), color='k', linestyle=':', linewidth = 3, label = 'Calving Event')
 axes.axvline(pd.to_datetime('2014-07-29-02:52:00'), color='k', linestyle=':', linewidth = 3)
 axes.axvspan(pd.to_datetime('2014-07-29-04:00:00'),pd.to_datetime('2014-07-29-19:25:00'), alpha= 0.2, color = 'gray', label = 'Mélange')
 axes.legend(loc= 'best')
+axes.tick_params(axis='x', labelrotation=30)
 
 
-fig = axes1.pcolormesh(e_eas1/1000, n_nor1/1000, adf_rot, vmin =0, vmax = 20, cmap = 'viridis') #norm=colors.SymLogNorm(linthresh = np.amin(5),linscale=0.090, vmin=0, vmax=16.5)
+sub1 = axes1.pcolormesh(e_eas1/1000, n_nor1/1000, adf_rot, vmin =0, vmax = 20, cmap = 'viridis') #norm=colors.SymLogNorm(linthresh = np.amin(5),linscale=0.090, vmin=0, vmax=16.5)
 #axes1.axis('equal')
 #axes1.set_title('20140729_031500.adf.unw.rec')
-axes1.set_xlabel('Easting (km)', fontsize = 14)
-axes1.set_ylabel('Northing (km)', fontsize = 14)
+#axes1.set_xlabel('Easting (km)', fontsize = 13)
+#axes1.set_ylabel('Northing (km)', fontsize = 13)
+fig.text(0.055, 0.745, 'Northing (km)', rotation = 'vertical')
+fig.text(0.055, 0.38, 'Speeds, w/ Uncertainties (m/d)', rotation = 'vertical')
+fig.text(0.19, 0.47, 'Easting (km)', rotation = 'horizontal')
+fig.text(0.47, 0.47, 'Easting (km)', rotation = 'horizontal')
 
 axes1.grid(True)
 axes1.axis('equal')
+axes1.tick_params(axis='x', labelrotation=30)
 #axes1.yaxis.set_major_locator(plt.NullLocator())
 #axes1.xaxis.set_major_formatter(plt.NullFormatter()) 
-plt.colorbar(fig,ax= axes1, label ='Speeds (m/d)')  
+plt.colorbar(sub1,ax= axes1, label ='Speeds (m/d)')  
 
-axes1.plot([-231.257],[-1980.45],'v', color='goldenrod', markersize = 5)
-axes1.plot([-230.885],[-1980.39],'s', color='goldenrod', markersize = 5)
+#axes1.plot([-231.257],[-1980.45],'v', color='goldenrod', markersize = 5)
+#axes1.plot([-230.885],[-1980.39],'s', color='goldenrod', markersize = 5)
 axes1.plot([-231.123],[-1980.67],'v', color='limegreen', markersize = 5)
 axes1.plot([-230.809],[-1980.62],'s', color='limegreen', markersize = 5)
 axes1.plot([-230.908],[-1981.07],'v', color='black', markersize = 5)
 axes1.plot([-230.66],[-1981.07],'s', color='black', markersize = 5)
 axes1.plot([-230.613],[-1981.32],'s', color='red', markersize = 5)
 axes1.plot([-230.962],[-1981.38],'v', color='red', markersize = 5)
-axes1.plot([-230.649],[-1981.96],'s', color='blue', markersize = 5)
+#axes1.plot([-230.649],[-1981.96],'s', color='blue', markersize = 5)
 
 
 axes2.pcolormesh(e_eas/1000, n_nor/1000, mli_rot, vmin=0, vmax=16, cmap = 'gray')
 axes2.axis('equal')
 axes2.grid(True)
+axes2.yaxis.tick_right()
 #axes2.set_title('20140729_105000u.mli.rec')
-axes2.set_xlabel('Easting (km)', fontsize = 14)
+#axes2.set_xlabel('Easting (km)', fontsize = 13)
 #axes2.set_ylabel('Northing (km)', fontsize = 14)
 axes2.plot([-232.909,-232.845,-232.359,-231.76,-231.71,-231.485,-231.499,-231.393,
           -231.24,-231.176,-231.173,-230.979,-230.908,-230.659],
@@ -555,7 +615,7 @@ axes2.plot([-232.909,-232.7,-232.41,-231.925,-231.533,-231.467,-231.415,
          [-1979.67,-1979.95,-1979.86,-1980.1,-1980.47,-1980.72,-1981.4,
           -1981.83, -1982.20,-1982.42,-1983.07,-1983.39,-1983.37,-1983.62],
          color='yellow', markersize = 1.5) 
-#
+
 axes2.plot([-232.911,-232.709,-232.314,-231.807,-231.672,-231.287,-231.137,
             -230.988,-230.977,-230.896,-230.931,-230.815,-230.636,-230.571],
          [-1979.67,-1979.91,-1979.86,-1980.15,-1980.16,-1980.59,-1981.07,
@@ -569,20 +629,21 @@ axes2.plot([-232.891,-232.786,-232.685,-232.295,-231.831,-231.477,-231.267,
           -1980.96, -1981.17,-1981.29,-1981.19,-1981.38,-1982.66,-1982.86,
           -1983.04,-1983.42,-1983.41,-1983.64],
          color='red', markersize = 1.5)  
-axes2.plot([-231.235],[-1980.36],'v', color='goldenrod', markersize = 5)
-axes2.plot([-230.901],[-1980.22],'s', color='goldenrod', markersize = 5)
+#axes2.plot([-231.235],[-1980.36],'v', color='goldenrod', markersize = 5)
+#axes2.plot([-230.901],[-1980.22],'s', color='goldenrod', markersize = 5)
 axes2.plot([-231.169],[-1980.74],'v', color='limegreen', markersize = 5)
 axes2.plot([-230.763],[-1980.48],'s', color='limegreen', markersize = 5)
 axes2.plot([-230.832],[-1981.11],'v', color='white', markersize = 5, markerfacecolor= 'none')
 axes2.plot([-230.56],[-1981.02],'s', color='white', markersize = 5, markerfacecolor= 'none')
 axes2.plot([-230.892],[-1981.47],'v', color='red', markersize = 5)
 axes2.plot([-230.578],[-1981.25],'s', color='red', markersize = 5)
-axes2.plot([-230.52],[-1981.89],'s', color='blue', markersize = 5)
+#axes2.plot([-230.52],[-1981.89],'s', color='blue', markersize = 5)
 
 
 axes1.yaxis.set_label_coords(-0.14,0.5)
 axes.yaxis.set_label_coords(-0.05,0.5)
 plt.setp(axes.get_xticklabels(),visible=True)
 
+axes2.tick_params(axis='x', labelrotation=30)
 #fig.align_ylabels(axes[:, 1])
 
