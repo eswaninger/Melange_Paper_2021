@@ -19,7 +19,6 @@ import math
 import pandas as pd
 import statistics as st
 import skimage as ski
-import cv2
 
 
 ice0=[]                               #Glacier velocity points lists
@@ -59,7 +58,7 @@ std_C = []
 
 yr = 778                             #coordinate of apex pixel in interferogram scan (y-axis) 
 xr = 1                               #coordinate of apex pixels in interferogram scan (x-axis)
-ys = np.arange(0,1559)               #range of pixels in interferogram (y-axis)
+ys = np.arange(0,1559)               #range of pixelps in interferogram (y-axis)
 xs = np.arange(0,845)                #range of pixels in interferogram (x-axis)
 slopes=[]                            #slope list of any pixel in the interferogram and the TRI origin point.
 for y in ys:                         #calculating slope from pixels to TRI origin and converting them into degrees
@@ -158,7 +157,7 @@ ice7_vel_meas = np.array(ice7)
 ice8_vel_meas = np.array(ice8)
 
 
-noise_rand= np.array(iqr_B)
+noise_rand= np.array(medians_B)
 noise_syst = np.array(medians_B)
 #noise_randA= np.array(iqr_A)
 #noise_systA = np.array(medians_A)
@@ -516,18 +515,18 @@ with open(file_path,'rb') as f:
 ##plt.scatter(t, gla1_vel_corr, s=1, color='darkcyan')
 #axes.plot(t_gap, vel_run_gap_g1, color='goldenrod', markersize = 0.5)
 
-axes.fill_between(t_gap, vel_run_gap_g2-noise_run_gap, vel_run_gap_g2+noise_run_gap, 
-                   color='limegreen', alpha='.2')
+#axes.fill_between(t_gap, vel_run_gap_g2-noise_run_gap, vel_run_gap_g2+noise_run_gap, 
+#                   color='limegreen', alpha='.2')
 #plt.scatter(t, gla2_vel_corr, s=1, color='blue')
 axes.plot(t_gap, vel_run_gap_g2, color='limegreen', markersize =0.5)
 
-axes.fill_between(t_gap, vel_run_gap_g3-noise_run_gap, vel_run_gap_g3+noise_run_gap, 
-                   color='black', alpha='.2')
+#axes.fill_between(t_gap, vel_run_gap_g3-noise_run_gap, vel_run_gap_g3+noise_run_gap, 
+#                   color='black', alpha='.2')
 #plt.scatter(t, gla3_vel_corr, s=1, color='violet')
 axes.plot(t_gap, vel_run_gap_g3, color='black', markersize =0.5, label = '▼')
 
-axes.fill_between(t_gap[0:319], vel_run_gap_g4[0:319]-noise_run_gap[0:319], vel_run_gap_g4[0:319]+noise_run_gap[0:319], 
-                   color='red', alpha='.2')
+#axes.fill_between(t_gap[0:319], vel_run_gap_g4[0:319]-noise_run_gap[0:319], vel_run_gap_g4[0:319]+noise_run_gap[0:319], 
+#                   color='red', alpha='.2')
 #plt.scatter(t, gla4_vel_corr, s=1, color='magenta')
 axes.plot(t_gap[0:319], vel_run_gap_g4[0:319], color='red', markersize =0.5)
 
@@ -536,18 +535,18 @@ axes.plot(t_gap[0:319], vel_run_gap_g4[0:319], color='red', markersize =0.5)
 ##plt.scatter(t, gla5_vel_corr, s=1, color='magenta')
 #axes.plot(t_gap, vel_run_gap_g5,'--', color='goldenrod', markersize =0.5)
 
-axes.fill_between(t_gap, vel_run_gap_g6-noise_run_gap, vel_run_gap_g6+noise_run_gap, 
-                   color='limegreen', alpha='.2')
+#axes.fill_between(t_gap, vel_run_gap_g6-noise_run_gap, vel_run_gap_g6+noise_run_gap, 
+#                   color='limegreen', alpha='.2')
 #plt.scatter(t, gla6_vel_corr, s=1, color='violet')
 axes.plot(t_gap, vel_run_gap_g6,'--', color='limegreen', markersize =0.5)
 
-axes.fill_between(t_gap, vel_run_gap_g7-noise_run_gap, vel_run_gap_g7+noise_run_gap, 
-                   color='black', alpha='.2')
+#axes.fill_between(t_gap, vel_run_gap_g7-noise_run_gap, vel_run_gap_g7+noise_run_gap, 
+#                   color='black', alpha='.2')
 #plt.scatter(t, gla7_vel_corr, s=1, color='magenta')
 axes.plot(t_gap, vel_run_gap_g7,'--', color='black', markersize =0.5, label = '■')
-
-axes.fill_between(t_gap, vel_run_gap_g8-noise_run_gap, vel_run_gap_g8+noise_run_gap, 
-                   color='red', alpha='.2')
+#
+#axes.fill_between(t_gap, vel_run_gap_g8-noise_run_gap, vel_run_gap_g8+noise_run_gap, 
+#                   color='red', alpha='.2')
 #plt.scatter(t, gla8_vel_corr, s=1, color='magenta')
 axes.plot(t_gap, vel_run_gap_g8,'--', color='red', markersize =0.5)
 

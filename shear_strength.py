@@ -123,13 +123,14 @@ cm  = -H*np.cos(theta)*((pi/pw)-(1/2))           #iceberg's center of mass
 cm_s = (C1*A1 + C2*A2)/(pi/pw)*A                  #Center of Buoyancy
 
 
-T = g*pi*L*A*(cm_s-cm)
-#T = H*Fnet*math.sin(theta)
+#T = g*pi*L*A*(cm_s-cm)
+T = H*Fnet*math.sin(theta)
 
 plt.figure()
-plt.plot(T, E,  '.')
-plt.xlabel("Torque moment (N/m)")
-plt.ylabel('Aspect Ratio')
+plt.plot(H, T,  '.')
+plt.ylabel("Torque moment (Nm)")
+plt.xlabel('Terminus thickness (m)')
+plt.grid()
 
 
 plt.gcf().autofmt_xdate()
